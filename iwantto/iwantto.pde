@@ -4,17 +4,15 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import processing.sound.SoundFile;
 
-final String TTS_SERVICE_URL = "http://twitter.martysullivan.com/text-to-speech?text={0}";
-final String TWEET_SERVICE_URL = "http://twitter.martysullivan.com/tweet-replace?find={0}&replace={1}";
-final String TWEET_FIND = "I want to";
-final String TWEET_REPLACE = "I have to";
+static final String TTS_SERVICE_URL = "http://twitter.martysullivan.com/text-to-speech?text={0}";
+static final String TWEET_SERVICE_URL = "http://twitter.martysullivan.com/tweet-replace?find={0}&replace={1}";
+static final String TWEET_FIND = "I want to";
+static final String TWEET_REPLACE = "I have to";
 
-int animationStart = -1;
+String tweetText;
 String tweetUrl;
-SoundFile mp3;
-
-String tweetText = "";
-File mp3File;
+File speechFile;
+SoundFile speech;
 
 void setup() {
   size(800, 800);
@@ -25,8 +23,9 @@ void setup() {
   try {    
     String tweetFind = URLEncoder.encode(TWEET_FIND, "UTF-8");
     String tweetReplace = URLEncoder.encode(TWEET_REPLACE, "UTF-8");
+    tweetText = "";
     tweetUrl = MessageFormat.format(TWEET_SERVICE_URL, tweetFind, tweetReplace);
-    mp3File = File.createTempFile("tweet", ".mp3");
+    speechFile = File.createTempFile("tweet", ".mp3");
   } 
   catch (UnsupportedEncodingException e) { }
   catch (IOException e) { }
@@ -35,9 +34,9 @@ void setup() {
 void draw() {
   if (!tweetText.equals("")) {
     text(tweetText, 10, 10, 780, 780);
-    mp3 = new SoundFile(this, mp3File.getAbsolutePath());
-    mp3.rate(0.5);
-    mp3.play();
+    speech = new SoundFile(this, speechFile.getAbsolutePath());
+    speech.rate(0.5);
+    speech.play();
     tweetText = "";
   }
   else {
@@ -55,7 +54,7 @@ void getTweet() {
     String encodedTweet = URLEncoder.encode(tweet.getString("replaced"), "UTF-8");
     String ttsUrl = MessageFormat.format(TTS_SERVICE_URL, encodedTweet);
     
-    saveBytes(mp3File.getAbsolutePath(), loadBytes(ttsUrl));
+    saveBytes(speechFile.getAbsolutePath(), loadBytes(ttsUrl));
   } 
   catch (UnsupportedEncodingException e) { }
 }
