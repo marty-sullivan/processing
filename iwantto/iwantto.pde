@@ -20,18 +20,25 @@ Get Tweet and Speech from Docker Container. The tweet will be either:
   1. The latest tweet within the last interval window (online)
   2. A random tweet from the local database of collected tweets (online or offline)
 */
-void drawTweet() {  
+void drawTweet() {
   String tweetJson = String.join("\n", loadStrings(tweetUrl));
   JSONObject tweet = parseJSONObject(tweetJson);
-  String tweetText = tweet.getString("TweetText").toUpperCase() + System.getProperty("line.separator") + System.getProperty("line.separator") + tweet.getString("TweetTimestamp");
-  String ttsUrl = MessageFormat.format(TTS_SERVICE_URL, tweet.getString("TweetId"));
-  saveBytes(speechFile, loadBytes(ttsUrl));
-
-  background(0);
-  text(tweetText, 10, 10, 780, 780);
-  speech = new SoundFile(this, speechFile);
-  speech.rate(0.5);
-  speech.play();
+  
+  if (tweet.isNull("Error")) {
+    String tweetText = tweet.getString("TweetText").toUpperCase() + System.getProperty("line.separator") + System.getProperty("line.separator") + tweet.getString("TweetTimestamp");
+    String ttsUrl = MessageFormat.format(TTS_SERVICE_URL, tweet.getString("TweetId"));
+    saveBytes(speechFile, loadBytes(ttsUrl));
+  
+    background(0);
+    text(tweetText, 10, 10, 780, 780);
+    speech = new SoundFile(this, speechFile);
+    speech.rate(0.5);
+    speech.play();
+  }
+  else if (tweet.getString("Error").equals("NOT_FOUND")) {
+    String msg = MessageFormat.format("No Matching Tweets in tweets.db for {0}:{1}. You must set the server to accumulate these Tweets First", TWEET_FIND, TWEET_REPLACE);
+    System.err.println(msg);
+  }
 }
 
 void setup() {
@@ -57,4 +64,3 @@ void draw() {
   delay(TWEET_INTERVAL_MILLIS);
   drawTweet();
 }
-

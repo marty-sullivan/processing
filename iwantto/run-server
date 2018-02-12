@@ -13,7 +13,7 @@ REPOSITORY=martysullivan
 docker login
 
 docker pull $REPOSITORY/twitter-collect:$ARCH
-docker rm -f twitter-collect
+docker rm -f twitter-collect 2> /dev/null
 
 docker run -d \
     --name twitter-collect \
@@ -25,7 +25,7 @@ docker run -d \
     $REPOSITORY/twitter-collect:$ARCH
 
 docker pull $REPOSITORY/twitter-match:$ARCH
-docker rm -f twitter-match
+docker rm -f twitter-match 2> /dev/null
 
 docker run -d \
     --name twitter-match \
