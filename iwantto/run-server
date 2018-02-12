@@ -1,0 +1,38 @@
+#!/bin/bash
+
+DISPLAY_TIMEZONE="America/New_York"
+TWEET_INTERVAL_SECONDS=15
+TWITTER_FIND="i want to"
+TWITTER_REPLACE="i have to"
+TWITTER_LANGUAGES="en"
+
+ARCH=$(uname -m)
+PORT=8080
+REPOSITORY=martysullivan
+
+docker login
+
+docker pull $REPOSITORY/twitter-collect:$ARCH
+docker rm -f twitter-collect
+
+docker run -d \
+    --name twitter-collect \
+    --restart=always \
+    -v $HOME:/root \
+    -e TWITTER_FIND="$TWITTER_FIND" \
+    -e TWITTER_REPLACE="$TWITTER_REPLACE" \
+    -e TWITTER_LANGUAGES="$TWITTER_LANGUAGES" \
+    $REPOSITORY/twitter-collect:$ARCH
+
+docker pull $REPOSITORY/twitter-match:$ARCH
+docker rm -f twitter-match
+
+docker run -d \
+    --name twitter-match \
+    --restart=always \
+    -p $PORT:80 \
+    -v $HOME:/root \
+    -e TIMEZONE="$DISPLAY_TIMEZONE" \
+    -e TWEET_INTERVAL_SECONDS="$TWEET_INTERVAL_SECONDS" \
+    $REPOSITORY/twitter-match:$ARCH
+
