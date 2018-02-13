@@ -56,7 +56,7 @@ void setup() {
   //textFont(font);
   textAlign(CENTER, CENTER);
   textSize(20);
-  background(0);
+  background(100);
   drawTweet();
 }
 
