@@ -35,7 +35,7 @@ void drawTweet() {
     String ttsUrl = MessageFormat.format(TTS_SERVICE_URL, tweet.getString("TweetId"));
     saveBytes(speechFile, loadBytes(ttsUrl));
 
-    background(0);
+    background(random(255),random(255),random(255));
     
     
     textFont(font, 25);
