@@ -59,8 +59,9 @@ void drawTweet() {
     speech = new SoundFile(this, speechFile);
     speech.rate(0.5);
     speech.play();
+    delay(1000);
     arduino.digitalWrite(11, Arduino.HIGH);
-    delay(3000);
+    delay(5000);
     arduino.digitalWrite(11, Arduino.LOW);
     
   } else if (tweet.getString("Error").equals("NOT_FOUND")) {
