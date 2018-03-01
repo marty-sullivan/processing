@@ -1,3 +1,7 @@
+import processing.serial.*;
+import cc.arduino.*;
+Arduino arduino;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -48,7 +52,9 @@ void drawTweet() {
     text(tweetTime, width/2, height-40, width-60, height-10);
     ding.play();
     
+    arduino.digitalWrite(11, Arduino.HIGH);
     delay(1000);
+    arduino.digitalWrite(11, Arduino.LOW);
     
     speech = new SoundFile(this, speechFile);
     speech.rate(0.5);
@@ -60,6 +66,11 @@ void drawTweet() {
 }
 
 void setup() {
+   println(Arduino.list());
+   arduino = new Arduino(this, Arduino.list()[0], 57600);
+   arduino.pinMode(11, Arduino.OUTPUT);
+
+  
   try {
     String tweetFind = URLEncoder.encode(TWEET_FIND, "UTF-8");
     String tweetReplace = URLEncoder.encode(TWEET_REPLACE, "UTF-8");
@@ -71,8 +82,8 @@ void setup() {
   catch (IOException e) {
   }
 
-  //size(720, 480);
-  fullScreen();
+  size(720, 480);
+  //fullScreen();
 
   ding = new SoundFile(this, "ding.mp3");
   font = loadFont("HelveticaNeue-Bold-48.vlw");
