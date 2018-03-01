@@ -52,13 +52,17 @@ void drawTweet() {
     text(tweetTime, width/2, height-40, width-60, height-10);
     ding.play();
     
-    arduino.digitalWrite(11, Arduino.HIGH);
+    
     delay(1000);
     arduino.digitalWrite(11, Arduino.LOW);
     
     speech = new SoundFile(this, speechFile);
     speech.rate(0.5);
     speech.play();
+    arduino.digitalWrite(11, Arduino.HIGH);
+    delay(3000);
+    arduino.digitalWrite(11, Arduino.LOW);
+    
   } else if (tweet.getString("Error").equals("NOT_FOUND")) {
     String msg = MessageFormat.format("No Matching Tweets in tweets.db for {0}:{1}. You must set the server to accumulate these Tweets First", TWEET_FIND, TWEET_REPLACE);
     System.err.println(msg);
