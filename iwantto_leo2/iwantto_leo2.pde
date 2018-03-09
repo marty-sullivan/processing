@@ -1,7 +1,3 @@
-import processing.serial.*;
-import cc.arduino.*;
-Arduino arduino;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -31,10 +27,6 @@ Get Tweet and Speech from Docker Container. The tweet will be either:
  */
 
 void setup() {
-   println(Arduino.list());
-   arduino = new Arduino(this, Arduino.list()[0], 57600);
-   arduino.pinMode(11, Arduino.OUTPUT);
-
   
   try {
     String tweetFind = URLEncoder.encode(TWEET_FIND, "UTF-8");
@@ -64,9 +56,6 @@ void setup() {
 void draw() {  
   delay(TWEET_INTERVAL_MILLIS);
   drawTweet();
-  arduino.digitalWrite(11, Arduino.HIGH);
-  delay(5000);
-  arduino.digitalWrite(11, Arduino.LOW);
 }
 
 
