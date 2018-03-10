@@ -1,3 +1,5 @@
+import processing.serial.*;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -9,16 +11,27 @@ static final String TWEET_SERVICE_URL = "http://localhost:8080/get-tweet?find={0
 
 static final String TWEET_FIND = "I want to";
 static final String TWEET_REPLACE = "I have to";
-static final int TWEET_INTERVAL_MILLIS = 15000; // This should match the Docker Server's Interval
+//static final int TWEET_INTERVAL_MILLIS = 15000; // This should match the Docker Server's Interval
 
 String tweetUrl;
 String speechFile;
 
+
+//int interval_tweet = 350;
+//int interval_voice = 320;
+
+boolean twitter_flag = false;
+boolean button = false;
+
 SoundFile speech;
 SoundFile ding;
+Serial myPort;                      
 
 PFont font;
 PFont font2;
+
+int arduinoInput =0;
+boolean firstContact = false;
 
 /*
 Get Tweet and Speech from Docker Container. The tweet will be either:
@@ -27,6 +40,11 @@ Get Tweet and Speech from Docker Container. The tweet will be either:
  */
 
 void setup() {
+  
+  println(Serial.list());
+  String portName = Serial.list()[1];
+  myPort = new Serial(this, portName, 9600);
+  
   
   try {
     String tweetFind = URLEncoder.encode(TWEET_FIND, "UTF-8");
@@ -50,12 +68,28 @@ void setup() {
   textAlign(CENTER, CENTER);
   textSize(20);
   background(100);
+  frameRate(30);
   drawTweet();
 }
 
 void draw() {  
-  delay(TWEET_INTERVAL_MILLIS);
-  drawTweet();
+  
+  
+  
+  if (twitter_flag) {
+    button = true;
+
+    if (button) {
+      ding.play();
+      delay(1000);
+      drawTweet();
+    }
+  }
+  
+  button = false;
+    
+  
+  
 }
 
 
@@ -68,32 +102,53 @@ void drawTweet() {
     String tweetTime = tweet.getString("TweetTimestamp");
     String ttsUrl = MessageFormat.format(TTS_SERVICE_URL, tweet.getString("TweetId"));
     saveBytes(speechFile, loadBytes(ttsUrl));
-
     background(random(255),random(255),random(255));
-    
-    
-    textFont(font, 25);
+    textFont(font, 60);
     rectMode(CENTER);
     fill(random(255),random(255),random(255));
     text(tweetText, width/2, height/2-10, width-60, height-10);
     
-    textFont(font2, 14);
+    textFont(font2, 20);
     fill(random(255),random(255),random(255));
     text(tweetTime, width/2, height-40, width-60, height-10);
-    ding.play();
     
-    
-    delay(1000);
-    arduino.digitalWrite(11, Arduino.LOW);
-    
+   
+
     speech = new SoundFile(this, speechFile);
     speech.rate(0.5);
     speech.play();
-    delay(1000);
-    
+    //delay(1000);
     
   } else if (tweet.getString("Error").equals("NOT_FOUND")) {
     String msg = MessageFormat.format("No Matching Tweets in tweets.db for {0}:{1}. You must set the server to accumulate these Tweets First", TWEET_FIND, TWEET_REPLACE);
     System.err.println(msg);
   }
 }
+
+void serialEvent(Serial myPort) {
+  int inByte = myPort.read();
+
+  if (firstContact == false) {
+    if (inByte == 'A') {
+      myPort.clear();          // clear the serial port buffer
+      firstContact = true;     // you've had first contact from the microcontroller
+      myPort.write('A');       // ask for more
+    }
+  } else {
+    // Add the latest byte from the serial port to array:
+    arduinoInput = inByte;
+
+   // println(arduinoInput);
+    // Send a capital A to request new sensor readings:
+    myPort.write('A');
+    // Reset serialCount:
+  }
+  
+  if (inByte == 10) {
+    twitter_flag = true;
+  } else {
+    twitter_flag = false;
+  }
+  
+}
+  
