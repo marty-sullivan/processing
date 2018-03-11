@@ -80,14 +80,14 @@ void loop() {
     hit_counter++;
   } 
   
-  hit_counter = int(hit_counter - 0.01);
+  //hit_counter = int(hit_counter - 0.001);
   
 
   
   analogWrite(robot_pin,robot);
   
 
-  Serial.println(hit_counter);
+  Serial.println(robot);
 
 }
 
