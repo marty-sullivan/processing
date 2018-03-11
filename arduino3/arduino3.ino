@@ -8,7 +8,7 @@ int button = 0;
 int crank = 0;
 int voice = 0;
 int robot;
-int hit_counter = 0;
+float hit_counter = 0;
 
 int button_count = 0;
 boolean button_State;
@@ -35,7 +35,6 @@ void loop() {
   if (button > 1000) {
     if (!button_State) {
       button_count = button_count + 255 ;
-      Serial.println("pressed");
       button_State = true;
     }
   } else {
@@ -77,17 +76,27 @@ void loop() {
 
   if (robot>255) {
     robot = 255;
-    hit_counter++;
   } 
   
-  //hit_counter = int(hit_counter - 0.001);
+  if (robot>150) {
+    hit_counter = hit_counter + 3;  
+  }
+  
+ 
+ hit_counter = hit_counter - 2;
+ 
+ if (hit_counter < 1) {
+  hit_counter = 0;
+ }
+ 
+ 
   
 
   
   analogWrite(robot_pin,robot);
   
 
-  Serial.println(robot);
+  Serial.println(hit_counter);
 
 }
 
