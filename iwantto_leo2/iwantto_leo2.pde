@@ -83,14 +83,11 @@ void drawTweet() {
     ding.play();
     
     
-<<<<<<< HEAD
+
     //delay(1000);
     //arduino.digitalWrite(11, Arduino.LOW);
-=======
-    delay(1000);
 
->>>>>>> 18e934c46fa3330c881abf7e6ef63c5438bbaa7a
-    
+    delay(1000);
     speech = new SoundFile(this, speechFile);
     speech.rate(0.5);
     speech.play();
