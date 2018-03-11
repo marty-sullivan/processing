@@ -1,5 +1,6 @@
 int robot_pin = 9;
 int buzzer_pin = 10;
+
 int red_pin = 11;
 int yellow_pin = 12;
 int green_pin = 13;
@@ -16,6 +17,10 @@ boolean button_State;
 int voice_count = 0;
 boolean voice_State;
 
+int ledState; 
+long previousMillis; 
+long interval = 1000;
+
 void setup() {
   // put your setup code here, to run once:
   for(int i=9;i<14;i++) {
@@ -25,10 +30,12 @@ void setup() {
 }
 
 void loop() {
+
+
   crank = analogRead(0);
   button = analogRead(1);
   voice = analogRead(2);
-  
+
   //button_control
   button_count = int(button_count - 0.1);
 
@@ -37,7 +44,8 @@ void loop() {
       button_count = button_count + 255 ;
       button_State = true;
     }
-  } else {
+  } 
+  else {
     button_State = false;
   }
 
@@ -48,7 +56,7 @@ void loop() {
   if (button_count < 1 ) {
     button_count = 0;
   }
-  
+
   //voice control
   voice_count = int(voice_count - 0.1);
 
@@ -57,7 +65,8 @@ void loop() {
       voice_count = voice_count + 255 ;
       voice_State = true;
     }
-  } else {
+  } 
+  else {
     voice_State = false;
   }
 
@@ -70,44 +79,75 @@ void loop() {
   }
 
 
- 
-  robot = button_count + crank/4 + voice_count;;
+
+  robot = button_count + crank/4 + voice_count;
+  ;
 
 
   if (robot>255) {
     robot = 255;
   } 
-  
+
   if (robot>150) {
     hit_counter = hit_counter + 3;  
   }
-  
- 
- hit_counter = hit_counter - 2;
- 
- if (hit_counter < 1) {
-  hit_counter = 0;
- }
- 
- 
-  
 
+
+  hit_counter = hit_counter - 2;
+
+  if (hit_counter < 1) {
+    hit_counter = 0;
+  }
   
+  if (hit_counter <50) {
+   for(int i=10;i<14;i++) {
+    digitalWrite(i,LOW);
+   }
+  }
+  
+  if (hit_counter>50 && hit_counter<300) {
+    blinking(11,300);
+    digitalWrite(12,LOW);
+    digitalWrite(13,LOW);
+  }
+  
+  if (hit_counter>300 && hit_counter<600) { 
+    digitalWrite(11,HIGH);
+    blinking(12,300);
+    digitalWrite(13,LOW);  
+  }
+  
+  if (hit_counter>600 && hit_counter<900) { 
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    blinking(13,300); 
+  } 
+  
+  if (hit_counter >900) {
+    hit_counter = 0;
+    digitalWrite(9,LOW);
+    digitalWrite(10,HIGH);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,LOW);
+    digitalWrite(13,LOW);
+    delay(3000);
+  }  
+
+
   analogWrite(robot_pin,robot);
   
+
 
   Serial.println(hit_counter);
 
 }
 
-void blinking(int pin, int time) {
+void blinking(int pin, long time) {
   int ledPin = pin;
-  int interval = time;
-  int ledState; 
-  long previousMillis; 
-  
+  interval = time;
   unsigned long currentMillis = millis();
- 
+
+
   if(currentMillis - previousMillis > interval) {
     // save the last time you blinked the LED 
     previousMillis = currentMillis;   
@@ -121,7 +161,8 @@ void blinking(int pin, int time) {
     // set the LED with the ledState of the variable:
     digitalWrite(ledPin, ledState);
   }
-  
+
 }
+
 
 
