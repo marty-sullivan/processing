@@ -1,8 +1,14 @@
+int robot_pin = 9;
+int buzzer_pin = 10;
+int red_pin = 11;
+int yellow_pin = 12;
+int green_pin = 13;
+
 int button = 0;
 int crank = 0;
 int voice = 0;
-
 int robot;
+int hit_counter = 0;
 
 int button_count = 0;
 boolean button_State;
@@ -10,10 +16,11 @@ boolean button_State;
 int voice_count = 0;
 boolean voice_State;
 
-
 void setup() {
   // put your setup code here, to run once:
-  pinMode(11, OUTPUT);
+  for(int i=9;i<14;i++) {
+    pinMode(i, OUTPUT);
+  }
   Serial.begin(9600);
 }
 
@@ -64,30 +71,48 @@ void loop() {
   }
 
 
-
-
-
-
-  //robot = voice_count;
-  
-
+ 
   robot = button_count + crank/4 + voice_count;;
-
-  
-  //Serial.println(voice);
-  //robot = voice;
 
 
   if (robot>255) {
     robot = 255;
-  }
+    hit_counter++;
+  } 
+  
+  hit_counter = int(hit_counter - 0.01);
+  
 
   
-  analogWrite(11,robot);
+  analogWrite(robot_pin,robot);
   
 
-  Serial.println(voice_count);
-
-
+  Serial.println(hit_counter);
 
 }
+
+void blinking(int pin, int time) {
+  int ledPin = pin;
+  int interval = time;
+  int ledState; 
+  long previousMillis; 
+  
+  unsigned long currentMillis = millis();
+ 
+  if(currentMillis - previousMillis > interval) {
+    // save the last time you blinked the LED 
+    previousMillis = currentMillis;   
+
+    // if the LED is off turn it on and vice-versa:
+    if (ledState == LOW)
+      ledState = HIGH;
+    else
+      ledState = LOW;
+
+    // set the LED with the ledState of the variable:
+    digitalWrite(ledPin, ledState);
+  }
+  
+}
+
+
