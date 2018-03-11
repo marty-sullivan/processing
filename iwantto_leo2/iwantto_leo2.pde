@@ -84,7 +84,7 @@ void drawTweet() {
     
     
     delay(1000);
-    arduino.digitalWrite(11, Arduino.LOW);
+
     
     speech = new SoundFile(this, speechFile);
     speech.rate(0.5);
