@@ -1,0 +1,17 @@
+#!/bin/bash
+
+DISPLAY_TIMEZONE="America/New_York"
+TWEET_INTERVAL_SECONDS=15
+TWITTER_FIND="i want to"
+TWITTER_REPLACE="i have to"
+TWITTER_LANGUAGES="en"
+
+ARCH=$(uname -m)
+PORT=8080
+REPOSITORY=martysullivan
+
+docker login
+
+docker pull $REPOSITORY/twitter-collect:$ARCH
+docker pull $REPOSITORY/twitter-match:$ARCH
+
