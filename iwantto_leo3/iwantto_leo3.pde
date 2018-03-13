@@ -31,6 +31,7 @@ PFont font;
 PFont font2;
 
 int arduinoInput =0;
+int inByte;
 boolean firstContact = false;
 
 /*
@@ -42,7 +43,7 @@ Get Tweet and Speech from Docker Container. The tweet will be either:
 void setup() {
   
   println(Serial.list());
-  String portName = Serial.list()[1];
+  String portName = Serial.list()[0];
   myPort = new Serial(this, portName, 9600);
   
   
@@ -57,8 +58,8 @@ void setup() {
   catch (IOException e) {
   }
 
-  size(720, 480);
-  //fullScreen();
+  //size(720, 480);
+  fullScreen();
 
   ding = new SoundFile(this, "ding.mp3");
   font = loadFont("HelveticaNeue-Bold-48.vlw");
@@ -74,20 +75,11 @@ void setup() {
 
 void draw() {  
   
-  
-  
   if (twitter_flag) {
-    button = true;
-
-    if (button) {
-      ding.play();
-      delay(1000);
       drawTweet();
-    }
   }
   
-  button = false;
-    
+  println(inByte);
   
   
 }
@@ -117,7 +109,7 @@ void drawTweet() {
     speech = new SoundFile(this, speechFile);
     speech.rate(0.5);
     speech.play();
-    //delay(1000);
+    //delay(10000);
     
   } else if (tweet.getString("Error").equals("NOT_FOUND")) {
     String msg = MessageFormat.format("No Matching Tweets in tweets.db for {0}:{1}. You must set the server to accumulate these Tweets First", TWEET_FIND, TWEET_REPLACE);
@@ -126,7 +118,7 @@ void drawTweet() {
 }
 
 void serialEvent(Serial myPort) {
-  int inByte = myPort.read();
+  inByte = myPort.read();
 
   if (firstContact == false) {
     if (inByte == 'A') {
@@ -144,8 +136,9 @@ void serialEvent(Serial myPort) {
     // Reset serialCount:
   }
   
-  if (inByte == 10) {
+  if (inByte == 9) {
     twitter_flag = true;
+    println("hello");
   } else {
     twitter_flag = false;
   }

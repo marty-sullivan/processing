@@ -81,7 +81,6 @@ void loop() {
 
 
   robot = button_count + crank/4 + voice_count;
-  ;
 
 
   if (robot>255) {
@@ -125,20 +124,30 @@ void loop() {
   
   if (hit_counter >900) {
     hit_counter = 0;
-    digitalWrite(9,LOW);
+    button_count = 0;
+    voice_count = 0;
+    analogWrite(9,0);
     digitalWrite(10,HIGH);
     digitalWrite(11,HIGH);
     digitalWrite(12,LOW);
     digitalWrite(13,LOW);
-    delay(3000);
+    delay(1000);
+    digitalWrite(10,LOW);
+    analogWrite(9,0);
+    Serial.write(9);
+    delay(100);
+    Serial.write(0);
+    delay(2000);
+    
+    
   }  
 
 
   analogWrite(robot_pin,robot);
   
+  delay(10);
 
-
-  Serial.println(hit_counter);
+  //Serial.println(hit_counter);
 
 }
 
