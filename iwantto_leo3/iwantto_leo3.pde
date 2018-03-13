@@ -58,8 +58,8 @@ void setup() {
   catch (IOException e) {
   }
 
-  //size(720, 480);
-  fullScreen();
+  size(720, 480);
+  //fullScreen();
 
   ding = new SoundFile(this, "ding.mp3");
   font = loadFont("HelveticaNeue-Bold-48.vlw");

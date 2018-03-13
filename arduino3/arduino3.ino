@@ -37,11 +37,11 @@ void loop() {
   voice = analogRead(2);
 
   //button_control
-  button_count = int(button_count - 0.1);
+  button_count = int(button_count - 0.2);
 
   if (button > 1000) {
     if (!button_State) {
-      button_count = button_count + 255 ;
+      button_count = button_count + 100 ;
       button_State = true;
     }
   } 
