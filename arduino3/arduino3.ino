@@ -104,25 +104,25 @@ void loop() {
    }
   }
   
-  if (hit_counter>50 && hit_counter<300) {
+  if (hit_counter>50 && hit_counter<200) {
     blinking(11,300);
     digitalWrite(12,LOW);
     digitalWrite(13,LOW);
   }
   
-  if (hit_counter>300 && hit_counter<600) { 
+  if (hit_counter>200 && hit_counter<400) { 
     digitalWrite(11,HIGH);
     blinking(12,300);
     digitalWrite(13,LOW);  
   }
   
-  if (hit_counter>600 && hit_counter<900) { 
+  if (hit_counter>400 && hit_counter<600) { 
     digitalWrite(11,HIGH);
     digitalWrite(12,HIGH);
     blinking(13,300); 
   } 
   
-  if (hit_counter >900) {
+  if (hit_counter >600) {
     hit_counter = 0;
     button_count = 0;
     voice_count = 0;
