@@ -32,6 +32,9 @@ Adafruit_SSD1306 display(OLED_RESET);
 
 #define LOGO16_GLCD_HEIGHT 16 
 #define LOGO16_GLCD_WIDTH  16 
+
+#define NUM_TWEETS 4
+
 static const unsigned char PROGMEM logo16_glcd_bmp[] =
 { B00000000, B11000000,
   B00000001, B11000000,
@@ -54,7 +57,20 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
-char tweet[] = "I HAVE TO EAT ICE CREAM";
+char tweets[][64] = {
+  "I HAVE TO EAT ICE CREAM",
+  "I HAVE TO GO TO PARIS",
+  "I HAVE TO SEE MY FRIENDS",
+  "I HAVE TO HAVE A DRINK"
+};
+
+char timestamps[][64] = {
+  "JAN 1 1970 00:00",
+  "JAN 1 1970 00:00",
+  "JAN 1 1970 00:00",
+  "JAN 1 1970 00:00",
+};
+
 int x, min_x, max_x;
 
 void setup()   {                
@@ -67,14 +83,14 @@ void setup()   {
   // Show image buffer on the display hardware.
   // Since the buffer is intialized with an Adafruit splashscreen
   // internally, this will display the splashscreen.
-  //display.display();
-  //delay(2000);
+  display.display();
+  delay(2000);
   
-  display.setTextSize(2);
+  display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setTextWrap(false);
   x = display.width();
-  min_x = -12 * strlen(tweet); // 12 = 6 pixels/character * text size 2
+  min_x = -6 * strlen(tweets[0]); // 12 = 6 pixels/character * text size 2
   max_x = min_x * -1;
   
   display.clearDisplay();
@@ -83,20 +99,33 @@ void setup()   {
 
 bool scrolling_right = false;
 bool scrolling_left = false;
+int current_tweet = 0;
 
 void loop() {
   int sensorValue = analogRead(A0);
   //Serial.println(sensorValue);
 
   if (!scrolling_right && sensorValue > 200) {
-    if (++x > display.width()) x = min_x;
+    if (++x > display.width()) { 
+      x = min_x;
+      current_tweet++;
+
+      if (current_tweet >= NUM_TWEETS) {
+        current_tweet = 0;
+      }
+
+      min_x = -6 * strlen(tweets[current_tweet]);
+      max_x = min_x * -1;
+    }
   }
-  else if (!scrolling_left && sensorValue <= 50) {
-    if (--x < min_x) x = display.width();
-  }
+  //else if (!scrolling_left && sensorValue <= 50) {
+  //  if (--x < min_x) x = display.width();
+  //}
 
   display.clearDisplay();
-  display.setCursor(x, 10);
-  display.print(tweet);
+  display.setCursor(x, 0);
+  display.print(tweets[current_tweet]);
+  display.setCursor(x, 20);
+  display.print(timestamps[current_tweet]);
   display.display();  
 }
