@@ -17,9 +17,11 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define LOGO16_GLCD_WIDTH  16 
 
 #define CHIP_SELECT 4
-
-#define NUM_TWEETS 4
+#define CHAR_SIZE 6
 #define TEXT_SIZE 4
+#define NUM_SPACES 10
+
+const int SPACE_CHARS = 0;
 
 static const unsigned char PROGMEM logo16_glcd_bmp[] =
 { B00000000, B11000000,
@@ -70,6 +72,7 @@ String read_tweet() {
     tweet += c;
   }
 
+  tweet.toUpperCase();
   return tweet;
 }
 
@@ -86,7 +89,6 @@ void setup() {
   display.setTextSize(TEXT_SIZE);
   display.setTextColor(WHITE);
   display.setTextWrap(false);
-  x = display.width();
   
   display.clearDisplay();
   delay(1);
@@ -97,9 +99,10 @@ void loop() {
   
   if (x < min_x) { 
     tweet = read_tweet();
-    x = max_x;
-    min_x = -6 * TEXT_SIZE * tweet.length();
-    max_x = min_x * -1;
+    x = display.width();
+    min_x = -1 * CHAR_SIZE * TEXT_SIZE * tweet.length() + -1 * CHAR_SIZE * TEXT_SIZE * SPACE_CHARS;
+    //max_x = min_x * -1;
+    Serial.println(min_x);
 
     Serial.println(tweet);
   }
