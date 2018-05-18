@@ -22,6 +22,13 @@ Adafruit_SSD1306 display(OLED_RESET);
 
 /*
 
+In order for this code to work, the Adafruit_SSD1306 and Adafruit_GFX libraries 
+need to be installed via Sketch->Include Library->Manage Libraries in the
+Arduino IDE!
+
+
+
+
 Pinout reference for the Arduino Micro:
 
     http://pighixxx.com/micropdf.pdf
