@@ -12,7 +12,6 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define YPOS 1
 #define DELTAY 2
 
-
 #define LOGO16_GLCD_HEIGHT 16 
 #define LOGO16_GLCD_WIDTH  16 
 
@@ -20,6 +19,33 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define CHAR_SIZE 6
 #define TEXT_SIZE 4
 #define NUM_SPACES 10
+
+/*
+
+Pinout reference for the Arduino Micro:
+
+    http://pighixxx.com/micropdf.pdf
+
+The pins for the screen:
+
+    •	5V goes to VCC 
+    •	GND goes to GND 
+    •	19/SDA goes to SDA 
+    •	18/SCL goes to SCL
+
+The pins for the SD Card Reader:
+
+    •	5V goes to 5V
+    •	GND goes to GND
+    •	9/SCLK goes to CLK
+    •	11/MISO goes to D0
+    •	10/MOSI goes to D1
+    •	8/SS goes to CS
+    •	3V is not connected
+    •	CD is not connected
+
+
+*/
 
 const int SPACE_CHARS = 0;
 
